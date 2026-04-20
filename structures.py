@@ -41,14 +41,16 @@ class BinarySearchTree:
         steps = 0
 
         while current is not None:
-            steps += 1
-
             if vruntime == current.process.vruntime:
                 return current, steps
+
             elif vruntime < current.process.vruntime:
                 current = current.left
+                steps += 1  # solo cuenta cuando bajas
+
             else:
                 current = current.right
+                steps += 1  # solo cuenta cuando bajas
 
         return None, steps
 
@@ -82,14 +84,16 @@ class SplayTree:
         steps = 0
 
         while current is not None:
-            steps += 1
-
             if vruntime == current.process.vruntime:
                 return current, steps
+
             elif vruntime < current.process.vruntime:
                 current = current.left
+                steps += 1
+
             else:
                 current = current.right
+                steps += 1
 
         return None, steps
     
