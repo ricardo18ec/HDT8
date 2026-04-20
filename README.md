@@ -14,7 +14,8 @@ El objetivo de este proyecto es simular y comparar el comportamiento de diferent
 
 ## Ejecución
 1.Instalar dependencias:
-pip install -r requirements.txt
+pip install graphviz
+descargar el programa de graphviz
 
 2.Ejecutar el programa:
 python main.py
