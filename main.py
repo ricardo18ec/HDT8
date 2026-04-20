@@ -127,3 +127,64 @@ if __name__ == "__main__":
     graph.render("bst_secuencial", format="png", cleanup=True)
 
     print("Imagen generada: bst_secuencial.png")
+    
+    # -------------------------
+    # ESCENARIO C
+    # -------------------------
+    print("\n--- ESCENARIO C: Proceso Frecuente ---")
+
+    # Crear árboles
+    bst = BinarySearchTree()
+    splay = SplayTree()
+
+    processes = []
+
+    # Generar 1000 procesos aleatorios
+    for i in range(1000):
+        vruntime = random.randint(1, 10000)
+        p = Process(i, vruntime)
+        processes.append(p)
+
+        bst.insert(p)
+        splay.insert(p)
+
+    print("Árboles generados")
+
+    # Elegir un proceso aleatorio
+    target = random.choice(processes)
+    print(f"Proceso elegido (vruntime): {target.vruntime}")
+
+    # Buscarlo 50 veces
+    bst_steps = []
+    splay_steps = []
+
+    for i in range(50):
+        _, steps_bst = bst.search(target.vruntime)
+        _, steps_splay = splay.search(target.vruntime)
+
+        bst_steps.append(steps_bst)
+        splay_steps.append(steps_splay)
+
+        print(f"Búsqueda {i+1}: BST={steps_bst}, Splay={steps_splay}")
+
+    # Promedios
+    avg_bst = sum(bst_steps) / 50
+    avg_splay = sum(splay_steps) / 50
+
+    print(f"\nPromedio BST: {avg_bst}")
+    print(f"Promedio Splay: {avg_splay}")
+
+    # Gráfica
+    plt.figure()
+    plt.plot(range(50), bst_steps, label="BST")
+    plt.plot(range(50), splay_steps, label="Splay")
+
+    plt.xlabel("Número de búsqueda")
+    plt.ylabel("Iteraciones")
+    plt.title("Escenario C - Proceso Frecuente")
+    plt.legend()
+
+    plt.savefig("escenario_C.png")
+    plt.show()
+
+    print("Gráfica generada: escenario_C.png")
