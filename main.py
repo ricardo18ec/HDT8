@@ -5,7 +5,6 @@ from graphviz import Digraph
 
 
 # VISUALIZACIÓN (Graphviz)
-
 def visualize_tree(root):
     dot = Digraph()
 
@@ -27,16 +26,18 @@ def visualize_tree(root):
     return dot
 
 
-# ESCENARIO A
-
 if __name__ == "__main__":
 
-    # Crear árboles
+    # -------------------------
+    # ESCENARIO A
+    # -------------------------
+    print("\n--- ESCENARIO A ---")
+
     bst = BinarySearchTree()
     splay = SplayTree()
 
-    # Generar 1000 procesos aleatorios
     processes = []
+
     for i in range(1000):
         vruntime = random.randint(1, 10000)
         p = Process(i, vruntime)
@@ -47,9 +48,7 @@ if __name__ == "__main__":
 
     print("1000 procesos insertados en BST y Splay")
 
-
-    # VISUALIZACIÓN (solo una muestra)
-  
+    # Visualización (pequeña)
     small_bst = BinarySearchTree()
     for i in range(30):
         vruntime = random.randint(1, 100)
@@ -60,17 +59,12 @@ if __name__ == "__main__":
 
     print("Imagen generada: bst_small.png")
 
-    
-    # SELECCIONAR 100 PROCESOS ALEATORIOS
-    
+    # Búsqueda
     sample = random.sample(processes, 100)
 
     bst_steps = []
     splay_steps = []
 
-
-    # BÚSQUEDA Y MEDICIÓN
-  
     for p in sample:
         _, steps_bst = bst.search(p.vruntime)
         _, steps_splay = splay.search(p.vruntime)
@@ -78,30 +72,58 @@ if __name__ == "__main__":
         bst_steps.append(steps_bst)
         splay_steps.append(steps_splay)
 
-
-    # PROMEDIOS
-
     avg_bst = sum(bst_steps) / len(bst_steps)
     avg_splay = sum(splay_steps) / len(splay_steps)
 
-    print(f"Promedio de iteraciones BST: {avg_bst}")
-    print(f"Promedio de iteraciones Splay: {avg_splay}")
+    print(f"Promedio BST: {avg_bst}")
+    print(f"Promedio Splay: {avg_splay}")
 
-
-    # GRÁFICA
-
-    x = list(range(100))  # procesos 0–99
+    # Gráfica
+    x = list(range(100))
 
     plt.figure()
     plt.plot(x, bst_steps, label="BST")
     plt.plot(x, splay_steps, label="Splay")
 
     plt.xlabel("Procesos")
-    plt.ylabel("Cantidad de iteraciones")
-    plt.title("Escenario A - Comparación de búsquedas")
+    plt.ylabel("Iteraciones")
+    plt.title("Escenario A")
     plt.legend()
 
     plt.savefig("escenario_A.png")
     plt.show()
 
     print("Gráfica generada: escenario_A.png")
+
+
+    # -------------------------
+    # ESCENARIO B
+    # -------------------------
+    print("\n--- ESCENARIO B: Llegada Secuencial ---")
+
+    bst_seq = BinarySearchTree()
+    splay_seq = SplayTree()
+
+    for i in range(1, 1001):
+        p = Process(i, i)
+        bst_seq.insert(p)
+        splay_seq.insert(p)
+
+    print("Procesos insertados en orden")
+
+    node_bst, steps_bst = bst_seq.search(1000)
+    node_splay, steps_splay = splay_seq.search(1000)
+
+    print(f"BST -> Iteraciones: {steps_bst}")
+    print(f"Splay -> Iteraciones: {steps_splay}")
+
+    # Visualización pequeña
+    small_seq = BinarySearchTree()
+
+    for i in range(1, 20):
+        small_seq.insert(Process(i, i))
+
+    graph = visualize_tree(small_seq.root)
+    graph.render("bst_secuencial", format="png", cleanup=True)
+
+    print("Imagen generada: bst_secuencial.png")

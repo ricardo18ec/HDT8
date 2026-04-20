@@ -19,10 +19,25 @@ class BinarySearchTree:
         self.root = None
 
     def insert(self, process):
+        new_node = Node(process)
+
         if self.root is None:
-            self.root = Node(process)
-        else:
-            self._insert_recursive(self.root, process)
+            self.root = new_node
+            return
+
+        current = self.root
+
+        while True:
+            if process.vruntime < current.process.vruntime:
+                if current.left is None:
+                    current.left = new_node
+                    return
+                current = current.left
+            else:
+                if current.right is None:
+                    current.right = new_node
+                    return
+                current = current.right
 
     def _insert_recursive(self, current_node, process):
         if process.vruntime < current_node.process.vruntime:
@@ -61,11 +76,25 @@ class SplayTree:
         self.root = None
 
     def insert(self, process):
-        # Igual que BST por ahora (sin splay)
+        new_node = Node(process)
+
         if self.root is None:
-            self.root = Node(process)
-        else:
-            self._insert_recursive(self.root, process)
+            self.root = new_node
+            return
+
+        current = self.root
+
+        while True:
+            if process.vruntime < current.process.vruntime:
+                if current.left is None:
+                    current.left = new_node
+                    return
+                current = current.left
+            else:
+                if current.right is None:
+                    current.right = new_node
+                    return
+                current = current.right
 
     def _insert_recursive(self, current_node, process):
         if process.vruntime < current_node.process.vruntime:
