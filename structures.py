@@ -182,6 +182,157 @@ class SplayTree:
             return self.root, steps
 
         return None, steps
+    
+
+# Clase Red-Black Node
+class RBNode:
+    def __init__(self, process):
+        self.process = process
+        self.parent = None
+        self.left = None
+        self.right = None
+        self.color = 1  # 1 = rojo, 0 = negro
+
+
+
+# Clase Red-Black Tree
+class RedBlackTree:
+    def __init__(self):
+        self.NIL = RBNode(None)
+        self.NIL.color = 0
+        self.root = self.NIL
+
+    
+    # Rotaciones
+    def left_rotate(self, x):
+        y = x.right
+        x.right = y.left
+        if y.left != self.NIL:
+            y.left.parent = x
+
+        y.parent = x.parent
+
+        if x.parent is None:
+            self.root = y
+        elif x == x.parent.left:
+            x.parent.left = y
+        else:
+            x.parent.right = y
+
+        y.left = x
+        x.parent = y
+
+    def right_rotate(self, y):
+        x = y.left
+        y.left = x.right
+        if x.right != self.NIL:
+            x.right.parent = y
+
+        x.parent = y.parent
+
+        if y.parent is None:
+            self.root = x
+        elif y == y.parent.right:
+            y.parent.right = x
+        else:
+            y.parent.left = x
+
+        x.right = y
+        y.parent = x
+
+    # Fix Red-Black
+    def fix_insert(self, k):
+        while k.parent and k.parent.color == 1:
+            if k.parent == k.parent.parent.left:
+                u = k.parent.parent.right
+
+                if u.color == 1:
+                    u.color = 0
+                    k.parent.color = 0
+                    k.parent.parent.color = 1
+                    k = k.parent.parent
+                else:
+                    if k == k.parent.right:
+                        k = k.parent
+                        self.left_rotate(k)
+
+                    k.parent.color = 0
+                    k.parent.parent.color = 1
+                    self.right_rotate(k.parent.parent)
+
+            else:
+                u = k.parent.parent.left
+
+                if u.color == 1:
+                    u.color = 0
+                    k.parent.color = 0
+                    k.parent.parent.color = 1
+                    k = k.parent.parent
+                else:
+                    if k == k.parent.left:
+                        k = k.parent
+                        self.right_rotate(k)
+
+                    k.parent.color = 0
+                    k.parent.parent.color = 1
+                    self.left_rotate(k.parent.parent)
+
+            if k == self.root:
+                break
+
+        self.root.color = 0
+
+    # Insert
+    def insert(self, process):
+        new_node = RBNode(process)
+        new_node.left = self.NIL
+        new_node.right = self.NIL
+
+        parent = None
+        current = self.root
+
+        while current != self.NIL:
+            parent = current
+            if process.vruntime < current.process.vruntime:
+                current = current.left
+            else:
+                current = current.right
+
+        new_node.parent = parent
+
+        if parent is None:
+            self.root = new_node
+        elif process.vruntime < parent.process.vruntime:
+            parent.left = new_node
+        else:
+            parent.right = new_node
+
+        if new_node.parent is None:
+            new_node.color = 0
+            return
+
+        if new_node.parent.parent is None:
+            return
+
+        self.fix_insert(new_node)
+
+    # Search (adaptado)
+    def search(self, vruntime):
+        current = self.root
+        steps = 0
+
+        while current != self.NIL:
+            if vruntime == current.process.vruntime:
+                return current, steps
+
+            elif vruntime < current.process.vruntime:
+                current = current.left
+                steps += 1
+            else:
+                current = current.right
+                steps += 1
+
+        return None, steps
 
 # Referencias bibliográficas:
 # Yadav, B. (2025). Binary Tree in Python. GeeksforGeeks. https://www.geeksforgeeks.org/binary-tree-in-python/
